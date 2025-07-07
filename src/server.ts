@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 import config from "./config";
 import { app } from "./app";
+import { Server } from "http";
 
-const server = async () => {
+let server: Server;
+
+const tourServer = async () => {
   try {
     await mongoose.connect(config.database_url!);
     console.log("Database connected successfully");
-    app.listen(config.port, () => {
+    server = app.listen(config.port, () => {
       console.log(`Server is running on http://localhost:${config.port}`);
     });
   } catch (error) {
@@ -15,4 +18,31 @@ const server = async () => {
   }
 };
 
-server();
+tourServer();
+process.on("unhandledRejection", (err) => {
+  console.log("un handle rejection detected... Server shutting down... ", err);
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
+  process.exit(1);
+});
+process.on("uncaughtException", (err) => {
+  console.log("un caught exception detected... Server shutting down... ", err);
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
+  process.exit(1);
+});
+
+process.on("SIGTERM", () => {
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
+  process.exit(1);
+});
