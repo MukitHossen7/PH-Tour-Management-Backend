@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import mongoose from "mongoose";
 import config from "./config";
 import { app } from "./app";
@@ -7,7 +8,10 @@ let server: Server;
 
 const tourServer = async () => {
   try {
-    await mongoose.connect(config.database_url!);
+    if (!config.database_url) {
+      throw new Error("Database URL is missing in environment variables.");
+    }
+    await mongoose.connect(config.database_url);
     console.log("Database connected successfully");
     server = app.listen(config.port, () => {
       console.log(`Server is running on http://localhost:${config.port}`);
