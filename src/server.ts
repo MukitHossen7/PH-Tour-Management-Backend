@@ -20,7 +20,7 @@ const tourServer = async () => {
 
 tourServer();
 process.on("unhandledRejection", (err) => {
-  console.log("un handle rejection detected... Server shutting down... ", err);
+  console.log("unHandle rejection detected... Server shutting down... ", err);
   if (server) {
     server.close(() => {
       process.exit(1);
