@@ -18,7 +18,7 @@ const authsSchema = new Schema<IAuthsProviders>(
   }
 );
 
-export const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser>(
   {
     name: {
       type: String,

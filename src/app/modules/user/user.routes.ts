@@ -1,0 +1,8 @@
+import express from "express";
+import { userControllers } from "./user.controller";
+
+const userRoute = express.Router();
+
+userRoute.post("/register", userControllers.createUser);
+
+export default userRoute;
