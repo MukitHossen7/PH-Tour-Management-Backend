@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 
 import cors from "cors";
 import routes from "./app/routes/routes";
+import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 export const app = express();
 
 //middleware
@@ -16,3 +17,5 @@ app.get("/", (req: Request, res: Response) => {
     message: "This is PH Tour Management API",
   });
 });
+
+app.use(globalErrorHandler);
