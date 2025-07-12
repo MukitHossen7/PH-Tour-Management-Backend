@@ -40,6 +40,7 @@ const updateUserById = catchAsync(
       config.jwt_secret as string
     ) as JwtPayload;
 
+    // const verify_token = req.user;
     const user = await userServices.updateUserById(
       userId,
       payload,

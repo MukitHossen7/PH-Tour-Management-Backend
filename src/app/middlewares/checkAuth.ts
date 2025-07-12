@@ -28,6 +28,7 @@ export const checkAuth =
           "You do not have permission to access this resource"
         );
       }
+      // req.user = verify_token;
       next();
     } catch (error) {
       next(error);
