@@ -3,6 +3,7 @@ import { IAuthsProviders, IUser } from "./user.interface";
 import { User } from "./user.model";
 import httpStatus from "http-status-codes";
 import bcrypt from "bcryptjs";
+import config from "../../../config";
 
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
@@ -15,7 +16,10 @@ const createUser = async (payload: Partial<IUser>) => {
     providerID: email as string,
   };
 
-  const hashPassword = await bcrypt.hash(password as string, 10);
+  const hashPassword = await bcrypt.hash(
+    password as string,
+    Number(config.bcrypt_salt_rounds)
+  );
   const user = await User.create({
     email,
     password: hashPassword,
