@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import config from "./config";
 import { app } from "./app";
 import { Server } from "http";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 
 let server: Server;
 
@@ -22,7 +23,11 @@ const tourServer = async () => {
   }
 };
 
-tourServer();
+(async () => {
+  await tourServer();
+  await seedSuperAdmin();
+})();
+
 process.on("unhandledRejection", (err) => {
   console.log("unHandle rejection detected... Server shutting down... ", err);
   if (server) {

@@ -3,6 +3,7 @@ import { userControllers } from "./user.controller";
 import { zodValidateRequest } from "../../middlewares/zodValidateRequest";
 import { createUserZodSchema } from "./user.zod.validation";
 import { checkAuth } from "../../middlewares/checkAuth";
+import { Role } from "./user.interface";
 
 const userRoute = express.Router();
 
@@ -13,7 +14,7 @@ userRoute.post(
 );
 userRoute.get(
   "/",
-  checkAuth("ADMIN", "SUPER_ADMIN"),
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   userControllers.getAllUsers
 );
 

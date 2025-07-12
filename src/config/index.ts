@@ -8,4 +8,6 @@ export default {
   jwt_secret: process.env.JWT_SECRET,
   jwt_expiration: process.env.JWT_EXPIRATION,
   bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
+  super_admin_password: process.env.SUPER_ADMIN_PASSWORD,
+  super_admin_email: process.env.SUPER_ADMIN_EMAIL,
 };
