@@ -18,4 +18,9 @@ userRoute.get(
   userControllers.getAllUsers
 );
 
+userRoute.patch(
+  "/:id",
+  checkAuth(...Object.values(Role)),
+  userControllers.updateUserById
+);
 export default userRoute;
