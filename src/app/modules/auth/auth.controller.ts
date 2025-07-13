@@ -50,12 +50,35 @@ const createNewAccessToken = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: "User Refresh Token create Successfully",
+      message: "New Access Token Retrieved Successfully",
       data: tokenInfo,
     });
   }
 );
+
+const logOutUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User Logged Out Successfully",
+      data: null,
+    });
+  }
+);
+
 export const authController = {
   createLogin,
   createNewAccessToken,
+  logOutUser,
 };
