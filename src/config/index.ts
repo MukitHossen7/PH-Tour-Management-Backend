@@ -10,4 +10,6 @@ export default {
   bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
   super_admin_password: process.env.SUPER_ADMIN_PASSWORD,
   super_admin_email: process.env.SUPER_ADMIN_EMAIL,
+  jwt_refresh_secret: process.env.JWT_REFRESH_SECRET,
+  jwt_refresh_expiration: process.env.JWT_REFRESH_EXPIRATION,
 };

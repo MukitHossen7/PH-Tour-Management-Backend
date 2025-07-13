@@ -30,7 +30,18 @@ const createLogin = async (payload: Partial<IUser>) => {
     config.jwt_secret as string,
     config.jwt_expiration as string
   );
-  return accessToken;
+
+  const refreshToken = generateToken(
+    tokenPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expiration as string
+  );
+
+  return {
+    accessToken,
+    refreshToken,
+    user: isExistUser,
+  };
 };
 
 export const authService = {
