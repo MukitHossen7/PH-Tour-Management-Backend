@@ -4,10 +4,11 @@ import cors from "cors";
 import routes from "./app/routes/routes";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import notFound from "./app/middlewares/notFound";
+import cookieParser from "cookie-parser";
 export const app = express();
 
 //middleware
-app.use([express.json(), cors()]);
+app.use([cookieParser(), express.json(), cors()]);
 
 //routes
 app.use("/api/v1", routes);

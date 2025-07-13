@@ -4,27 +4,38 @@ import { catchAsync } from "../../utils/catchAsync";
 import { authService } from "./auth.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
-import { JwtPayload } from "jsonwebtoken";
+import AppError from "../../errorHelpers/AppError";
 
 const createLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = await authService.createLogin(req.body);
+    const userInfo = await authService.createLogin(req.body);
+
+    res.cookie("accessToken", userInfo.accessToken, {
+      httpOnly: true,
+      secure: false,
+    });
+    res.cookie("refreshToken", userInfo.refreshToken, {
+      httpOnly: true,
+      secure: false,
+    });
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: "User Login Successfully",
-      data: user,
+      data: userInfo,
     });
   }
 );
 
 const createNewAccessToken = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    // const refreshToken = req.cookies.refreshToken;
-    const refreshToken = req.headers.authorization;
-    const tokenInfo = (await authService.createNewAccessToken(
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "Refresh token is missing");
+    }
+    const tokenInfo = await authService.createNewAccessToken(
       refreshToken as string
-    )) as JwtPayload;
+    );
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
