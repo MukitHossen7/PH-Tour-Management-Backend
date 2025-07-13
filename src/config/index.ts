@@ -1,3 +1,5 @@
+// ai file app ar vitor dita hoba in future korba ata
+
 import dotenv from "dotenv";
 dotenv.config();
 
