@@ -7,6 +7,8 @@ import httpStatus from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
 import { setAuthCookie } from "../../utils/setCookie";
 import { JwtPayload } from "jsonwebtoken";
+import { createUserTokens } from "../../utils/userToken";
+import config from "../../../config";
 
 const createLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -81,6 +83,9 @@ const logOutUser = catchAsync(
 const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user;
+    if (!decodedToken) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "Invalid token");
+    }
     const newPassword = req.body.newPassword;
     const oldPassword = req.body.oldPassword;
 
@@ -95,9 +100,30 @@ const resetPassword = catchAsync(
   }
 );
 
+const googleLogin = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    if (!user) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "User not authenticated");
+    }
+    const tokenInfo = createUserTokens(user);
+
+    setAuthCookie(res, tokenInfo);
+
+    // sendResponse(res, {
+    //   statusCode: httpStatus.OK,
+    //   success: true,
+    //   message: "Password reset Successfully",
+    //   data: null,
+    // });
+    res.redirect(config.FRONTEND_URL);
+  }
+);
+
 export const authController = {
   createLogin,
   createNewAccessToken,
   logOutUser,
   resetPassword,
+  googleLogin,
 };

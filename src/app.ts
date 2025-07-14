@@ -7,6 +7,7 @@ import notFound from "./app/middlewares/notFound";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import expressSession from "express-session";
+import "./app/config/passport"; // Ensure passport strategies are loaded
 export const app = express();
 
 //middleware
