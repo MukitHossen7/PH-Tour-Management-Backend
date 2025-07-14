@@ -102,7 +102,12 @@ const resetPassword = catchAsync(
 
 const googleLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    let redirectUrl = req.query.state ? (req.query.state as string) : "";
+    if (redirectUrl.startsWith("/")) {
+      redirectUrl = redirectUrl.slice(1);
+    }
     const user = req.user;
+
     if (!user) {
       throw new AppError(httpStatus.UNAUTHORIZED, "User not authenticated");
     }
@@ -116,7 +121,7 @@ const googleLogin = catchAsync(
     //   message: "Password reset Successfully",
     //   data: null,
     // });
-    res.redirect(config.FRONTEND_URL);
+    res.redirect(`${config.FRONTEND_URL}/${redirectUrl}`);
   }
 );
 
