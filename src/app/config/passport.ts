@@ -25,6 +25,16 @@ passport.use(
           return done(null, false, { message: "Email does not exist" });
         }
 
+        const isGoogleAuthenticated = isExistUser.auths.some(
+          (providerObjects) => providerObjects.provider == "google"
+        );
+
+        if (isGoogleAuthenticated) {
+          return done(null, false, {
+            message: "You have authenticated through Google",
+          });
+        }
+
         const isPasswordMatch = await bcrypt.compare(
           password as string,
           isExistUser.password as string
