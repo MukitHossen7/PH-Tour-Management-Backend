@@ -11,6 +11,7 @@ import { Role } from "../modules/user/user.interface";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 
+// credential Login use passPort.js
 passport.use(
   new LocalStrategy(
     {
@@ -41,6 +42,7 @@ passport.use(
   )
 );
 
+//google Login use passport.js
 passport.use(
   new GoogleStrategy(
     {

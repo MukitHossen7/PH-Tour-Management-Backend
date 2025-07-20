@@ -7,6 +7,7 @@ import httpStatus from "http-status-codes";
 import { verifyToken } from "../../utils/jwt";
 import config from "../../../config";
 import { JwtPayload } from "jsonwebtoken";
+
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await userServices.createUser(req.body);
