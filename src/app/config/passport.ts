@@ -29,7 +29,7 @@ passport.use(
           (providerObjects) => providerObjects.provider == "google"
         );
 
-        if (isGoogleAuthenticated) {
+        if (isGoogleAuthenticated && !isExistUser.password) {
           return done(null, false, {
             message: "You have authenticated through Google",
           });

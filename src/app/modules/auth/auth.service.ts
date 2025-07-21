@@ -11,6 +11,7 @@ import {
 import { JwtPayload } from "jsonwebtoken";
 import config from "../../../config";
 
+//cradientional login without passport.js
 const createLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
   const isExistUser = await User.findOne({ email });

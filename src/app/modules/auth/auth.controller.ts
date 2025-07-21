@@ -46,7 +46,7 @@ const createLogin = catchAsync(
         return next(err);
       }
       if (!user) {
-        return new AppError(401, info.message);
+        return next(new AppError(401, info.message));
       }
 
       const userToken = createUserTokens(user);
