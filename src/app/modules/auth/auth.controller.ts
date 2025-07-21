@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
@@ -9,29 +10,61 @@ import { setAuthCookie } from "../../utils/setCookie";
 import { JwtPayload } from "jsonwebtoken";
 import { createUserTokens } from "../../utils/userToken";
 import config from "../../../config";
+import passport from "passport";
 
+// cradientional login without passport.js
+// const createLogin = catchAsync(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const userInfo = await authService.createLogin(req.body);
+
+//     // res.cookie("accessToken", userInfo.accessToken, {
+//     //   httpOnly: true,
+//     //   secure: false,
+//     // });
+
+//     // res.cookie("refreshToken", userInfo.refreshToken, {
+//     //   httpOnly: true,
+//     //   secure: false,
+//     // });
+
+//     setAuthCookie(res, userInfo);
+
+//     sendResponse(res, {
+//       statusCode: httpStatus.OK,
+//       success: true,
+//       message: "User Login Successfully",
+//       data: userInfo,
+//     });
+//   }
+// );
+
+//cradientional login use passport.js
 const createLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const userInfo = await authService.createLogin(req.body);
+    passport.authenticate("local", async (err: any, user: any, info: any) => {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return new AppError(401, info.message);
+      }
 
-    // res.cookie("accessToken", userInfo.accessToken, {
-    //   httpOnly: true,
-    //   secure: false,
-    // });
+      const userToken = createUserTokens(user);
 
-    // res.cookie("refreshToken", userInfo.refreshToken, {
-    //   httpOnly: true,
-    //   secure: false,
-    // });
+      const { password, ...rest } = user.toObject();
+      setAuthCookie(res, userToken);
 
-    setAuthCookie(res, userInfo);
-
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "User Login Successfully",
-      data: userInfo,
-    });
+      sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "User Login Successfully",
+        data: {
+          accessToken: userToken.accessToken,
+          refreshToken: userToken.refreshToken,
+          user: rest,
+        },
+      });
+    })(req, res, next);
   }
 );
 
