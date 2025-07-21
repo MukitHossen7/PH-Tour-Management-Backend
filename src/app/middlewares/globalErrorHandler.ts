@@ -10,6 +10,7 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  const errorSources: any[] = [];
   let statusCode = 500;
   let message = "Something Went Wrong!!";
 
@@ -23,6 +24,18 @@ export const globalErrorHandler = (
   else if (error.name === "CastError") {
     statusCode = 400;
     message = "Invalid MongoDB ObjectId. Please provide a valid id";
+  }
+  //mongoose validation error
+  else if (error.name === "ValidationError") {
+    statusCode = 400;
+    const errors = Object.values(error.errors);
+    errors.forEach((errorObject: any) =>
+      errorSources.push({
+        path: errorObject.path,
+        message: errorObject.message,
+      })
+    );
+    message = "Validation Error";
   } else if (error instanceof AppError) {
     statusCode = error.statusCode;
     message = error.message;
@@ -33,6 +46,7 @@ export const globalErrorHandler = (
   res.status(statusCode).json({
     success: false,
     message,
+    errorSources,
     error,
     stack: config.node_env === "development" ? error.stack : null,
   });
