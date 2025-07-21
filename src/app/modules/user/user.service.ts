@@ -9,6 +9,7 @@ import { JwtPayload } from "jsonwebtoken";
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
   const isExistUser = await User.findOne({ email });
+
   if (isExistUser) {
     throw new AppError(httpStatus.BAD_REQUEST, "User Already Exist");
   }
