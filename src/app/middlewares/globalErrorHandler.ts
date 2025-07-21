@@ -4,13 +4,18 @@ import { NextFunction, Request, Response } from "express";
 import config from "../../config";
 import AppError from "../errorHelpers/AppError";
 
+interface IErrorSources {
+  message: string;
+  path: string;
+}
+
 export const globalErrorHandler = (
   error: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const errorSources: any[] = [];
+  const errorSources: IErrorSources[] = [];
   let statusCode = 500;
   let message = "Something Went Wrong!!";
 
@@ -58,7 +63,7 @@ export const globalErrorHandler = (
     success: false,
     message,
     errorSources,
-    error,
+    error: config.node_env === "development" ? error : null,
     stack: config.node_env === "development" ? error.stack : null,
   });
 };
