@@ -13,8 +13,10 @@ const createTour = async (payload: ITour) => {
   return tour;
 };
 
-const getAllTours = async () => {
-  const data = await Tour.find({});
+const getAllTours = async (query: Record<string, string>) => {
+  const filter = query;
+  const data = await Tour.find(filter);
+  const totalTour = await Tour.countDocuments();
   // const queryBuilder = new QueryBuilder(Tour.find(), query);
 
   // const tours = await queryBuilder
@@ -33,6 +35,9 @@ const getAllTours = async () => {
 
   return {
     data,
+    meta: {
+      total: totalTour,
+    },
   };
 };
 

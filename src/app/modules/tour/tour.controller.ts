@@ -32,12 +32,16 @@ const createTour = catchAsync(
 
 const getAllTours = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await TourService.getAllTours();
+    const query = req.query;
+    const result = await TourService.getAllTours(
+      query as Record<string, string>
+    );
     sendResponse(res, {
       statusCode: 200,
       success: true,
       message: "Tours retrieved successfully",
       data: result.data,
+      meta: result.meta,
     });
   }
 );
