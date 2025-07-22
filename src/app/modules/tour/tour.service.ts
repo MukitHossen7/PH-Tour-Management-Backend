@@ -64,7 +64,7 @@ const createTourType = async (payload: ITourType) => {
     throw new Error("Tour type already exists.");
   }
 
-  const tourType = await TourType.create({ name });
+  const tourType = await TourType.create(payload);
   return tourType;
 };
 

@@ -23,7 +23,7 @@ const tourSchema = new Schema<ITour>(
     },
     slug: {
       type: String,
-      required: [true, "slug is required"],
+      required: false,
       unique: true,
       trim: true,
     },
@@ -93,5 +93,33 @@ const tourSchema = new Schema<ITour>(
   },
   { timestamps: true, versionKey: false }
 );
+
+tourSchema.pre("save", async function (next) {
+  if (this.isModified("title")) {
+    let slug = this.title.toLowerCase().split(" ").join("-");
+
+    let counter = 0;
+    while (await Tour.exists({ slug })) {
+      slug = `${slug}-${counter++}`;
+    }
+    this.slug = slug;
+  }
+  next();
+});
+
+tourSchema.pre("findOneAndUpdate", async function (next) {
+  const tour = this.getUpdate() as ITour;
+  if (tour.title) {
+    let slug = tour.title.toLowerCase().split(" ").join("-");
+
+    let counter = 0;
+    while (await Tour.exists({ slug })) {
+      slug = `${slug}-${counter++}`;
+    }
+    tour.slug = slug;
+  }
+  this.setUpdate(tour);
+  next();
+});
 
 export const Tour = model<ITour>("Tour", tourSchema);

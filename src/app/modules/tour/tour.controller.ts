@@ -53,8 +53,7 @@ const deleteTour = catchAsync(async (req: Request, res: Response) => {
 
 //TourType CRUD Operations
 const createTourType = catchAsync(async (req: Request, res: Response) => {
-  const { name } = req.body;
-  const result = await TourService.createTourType(name);
+  const result = await TourService.createTourType(req.body);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
