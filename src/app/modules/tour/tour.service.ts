@@ -13,28 +13,28 @@ const createTour = async (payload: ITour) => {
   return tour;
 };
 
-// const getAllTours = async (query: Record<string, string>) => {
-//   const queryBuilder = new QueryBuilder(Tour.find(), query);
+const getAllTours = async () => {
+  const data = await Tour.find({});
+  // const queryBuilder = new QueryBuilder(Tour.find(), query);
 
-//   const tours = await queryBuilder
-//     .search(tourSearchableFields)
-//     .filter()
-//     .sort()
-//     .fields()
-//     .paginate();
+  // const tours = await queryBuilder
+  //   .search(tourSearchableFields)
+  //   .filter()
+  //   .sort()
+  //   .fields()
+  //   .paginate();
 
-//   // const meta = await queryBuilder.getMeta()
+  // const meta = await queryBuilder.getMeta()
 
-//   const [data, meta] = await Promise.all([
-//     tours.build(),
-//     queryBuilder.getMeta(),
-//   ]);
+  // const [data, meta] = await Promise.all([
+  //   tours.build(),
+  //   queryBuilder.getMeta(),
+  // ]);
 
-//   return {
-//     data,
-//     meta,
-//   };
-// };
+  return {
+    data,
+  };
+};
 
 const updateTour = async (id: string, payload: Partial<ITour>) => {
   const existingTour = await Tour.findById(id);
@@ -97,6 +97,7 @@ const deleteTourType = async (id: string) => {
 };
 
 export const TourService = {
+  getAllTours,
   createTour,
   updateTour,
   deleteTour,
