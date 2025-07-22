@@ -9,13 +9,20 @@ const createTour = async (payload: ITour) => {
   }
 
   const tour = await Tour.create(payload);
-
   return tour;
 };
 
 const getAllTours = async (query: Record<string, string>) => {
   const filter = query;
-  const data = await Tour.find(filter);
+  const search = query.search || "";
+  delete filter["search"];
+  const tourSearchableFields = ["title", "description", "location"];
+  const searchQuery = {
+    $or: tourSearchableFields.map((field) => ({
+      [field]: { $regex: search, $options: "i" },
+    })),
+  };
+  const data = await Tour.find(searchQuery).find(filter);
   const totalTour = await Tour.countDocuments();
   // const queryBuilder = new QueryBuilder(Tour.find(), query);
 
