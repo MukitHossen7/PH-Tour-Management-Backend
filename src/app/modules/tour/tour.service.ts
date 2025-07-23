@@ -19,8 +19,11 @@ const getAllTours = async (query: Record<string, string>) => {
   const sort = query.sort || "-createdAt";
   //fields filtering
   const fields = query.fields?.split(",").join(" ") || "";
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 2;
+  const skip = (page - 1) * limit;
 
-  const excludeField = ["search", "sort", "fields"];
+  const excludeField = ["search", "sort", "fields", "page", "limit"];
   for (const field of excludeField) {
     delete filter[field];
   }
@@ -31,11 +34,13 @@ const getAllTours = async (query: Record<string, string>) => {
       [field]: { $regex: search, $options: "i" },
     })),
   };
-
+  // console.log(filter);
   const data = await Tour.find(searchQuery)
     .find(filter)
     .sort(sort)
-    .select(fields);
+    .select(fields)
+    .skip(skip)
+    .limit(limit);
   const totalTour = await Tour.countDocuments();
   return {
     data,
