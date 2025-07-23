@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 
@@ -15,31 +16,27 @@ const createTour = async (payload: ITour) => {
 const getAllTours = async (query: Record<string, string>) => {
   const filter = query;
   const search = query.search || "";
-  delete filter["search"];
+  const sort = query.sort || "-createdAt";
+  //fields filtering
+  const fields = query.fields?.split(",").join(" ") || "";
+
+  const excludeField = ["search", "sort", "fields"];
+  for (const field of excludeField) {
+    delete filter[field];
+  }
+
   const tourSearchableFields = ["title", "description", "location"];
   const searchQuery = {
     $or: tourSearchableFields.map((field) => ({
       [field]: { $regex: search, $options: "i" },
     })),
   };
-  const data = await Tour.find(searchQuery).find(filter);
+
+  const data = await Tour.find(searchQuery)
+    .find(filter)
+    .sort(sort)
+    .select(fields);
   const totalTour = await Tour.countDocuments();
-  // const queryBuilder = new QueryBuilder(Tour.find(), query);
-
-  // const tours = await queryBuilder
-  //   .search(tourSearchableFields)
-  //   .filter()
-  //   .sort()
-  //   .fields()
-  //   .paginate();
-
-  // const meta = await queryBuilder.getMeta()
-
-  // const [data, meta] = await Promise.all([
-  //   tours.build(),
-  //   queryBuilder.getMeta(),
-  // ]);
-
   return {
     data,
     meta: {
