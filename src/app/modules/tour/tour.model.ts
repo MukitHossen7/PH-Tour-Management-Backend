@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 import { ITour, ITourType } from "./tour.interface";
-
+import slugify from "slugify";
 const tourTypeSchema = new Schema<ITourType>(
   {
     name: {
@@ -104,7 +104,8 @@ const tourSchema = new Schema<ITour>(
 
 tourSchema.pre("save", async function (next) {
   if (this.isModified("title")) {
-    let slug = this.title.toLowerCase().split(" ").join("-");
+    // let slug = this.title.toLowerCase().split(" ").join("-");
+    let slug = slugify(this.title, "_");
 
     let counter = 1;
     while (await Tour.exists({ slug })) {
@@ -118,7 +119,7 @@ tourSchema.pre("save", async function (next) {
 tourSchema.pre("findOneAndUpdate", async function (next) {
   const tour = this.getUpdate() as ITour;
   if (tour.title) {
-    let slug = tour.title.toLowerCase().split(" ").join("-");
+    let slug = slugify(tour.title, "_");
 
     let counter = 0;
     while (await Tour.exists({ slug })) {

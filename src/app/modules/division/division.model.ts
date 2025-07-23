@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 import { model, Schema } from "mongoose";
 import { IDivision } from "./division.interface";
+import slugify from "slugify";
 
 const divisionSchema = new Schema<IDivision>(
   {
@@ -29,8 +30,8 @@ const divisionSchema = new Schema<IDivision>(
 
 divisionSchema.pre("save", async function (next) {
   if (this.isModified("name")) {
-    const baseSlug = this.name.toLowerCase().split(" ").join("-");
-    let slug = `${baseSlug}-division`;
+    const baseSlug = slugify(this.name, "_");
+    let slug = `${baseSlug}_division`;
     let counter = 0;
     while (await Division.exists({ slug })) {
       slug = `${slug}-${counter++}`;
@@ -43,8 +44,8 @@ divisionSchema.pre("save", async function (next) {
 divisionSchema.pre("findOneAndUpdate", async function (next) {
   const division = this.getUpdate() as IDivision;
   if (division.name) {
-    const baseSlug = division.name.toLowerCase().split(" ").join("-");
-    let slug = `${baseSlug}-division`;
+    const baseSlug = slugify(division.name, "_");
+    let slug = `${baseSlug}_division`;
     let counter = 0;
     while (await Division.exists({ slug })) {
       slug = `${slug}-${counter++}`;
