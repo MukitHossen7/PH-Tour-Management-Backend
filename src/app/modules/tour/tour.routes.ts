@@ -45,6 +45,8 @@ tourRoute.post(
   TourController.createTour
 );
 
+tourRoute.get("/:slug", TourController.getSingleTour);
+
 tourRoute.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),

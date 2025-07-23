@@ -40,6 +40,14 @@ const tourSchema = new Schema<ITour>(
       type: String,
       required: false,
     },
+    departureLocation: {
+      type: String,
+      required: false,
+    },
+    arrivalLocation: {
+      type: String,
+      required: false,
+    },
     costFrom: {
       type: Number,
       required: false,
@@ -98,7 +106,7 @@ tourSchema.pre("save", async function (next) {
   if (this.isModified("title")) {
     let slug = this.title.toLowerCase().split(" ").join("-");
 
-    let counter = 0;
+    let counter = 1;
     while (await Tour.exists({ slug })) {
       slug = `${slug}-${counter++}`;
     }
