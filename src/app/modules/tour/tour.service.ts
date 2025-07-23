@@ -42,11 +42,17 @@ const getAllTours = async (query: Record<string, string>) => {
     .skip(skip)
     .limit(limit);
   const totalTour = await Tour.countDocuments();
+  const totalPage = Math.ceil(totalTour / limit);
+
+  const meta = {
+    page: page,
+    limit: limit,
+    total: totalTour,
+    totalPage: totalPage,
+  };
   return {
     data,
-    meta: {
-      total: totalTour,
-    },
+    meta: meta,
   };
 };
 
