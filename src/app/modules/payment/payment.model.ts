@@ -20,7 +20,7 @@ const paymentSchema = new Schema<IPayment>(
       required: [true, "Transaction Id is Required"],
     },
     paymentGatewayData: {
-      type: any,
+      type: Schema.Types.Mixed,
     },
     invoiceUrl: {
       type: String,
