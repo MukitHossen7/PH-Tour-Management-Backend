@@ -13,48 +13,48 @@ const createTour = async (payload: ITour) => {
   return tour;
 };
 
-const getAllTours = async (query: Record<string, string>) => {
-  const filter = query;
-  const search = query.search || "";
-  const sort = query.sort || "-createdAt";
-  //fields filtering
-  const fields = query.fields?.split(",").join(" ") || "";
-  const page = Number(query.page) || 1;
-  const limit = Number(query.limit) || 2;
-  const skip = (page - 1) * limit;
+// const getAllTours = async (query: Record<string, string>) => {
+//   const filter = query;
+//   const search = query.search || "";
+//   const sort = query.sort || "-createdAt";
+//   //fields filtering
+//   const fields = query.fields?.split(",").join(" ") || "";
+//   const page = Number(query.page) || 1;
+//   const limit = Number(query.limit) || 2;
+//   const skip = (page - 1) * limit;
 
-  const excludeField = ["search", "sort", "fields", "page", "limit"];
-  for (const field of excludeField) {
-    delete filter[field];
-  }
+//   const excludeField = ["search", "sort", "fields", "page", "limit"];
+//   for (const field of excludeField) {
+//     delete filter[field];
+//   }
 
-  const tourSearchableFields = ["title", "description", "location"];
-  const searchQuery = {
-    $or: tourSearchableFields.map((field) => ({
-      [field]: { $regex: search, $options: "i" },
-    })),
-  };
-  // console.log(filter);
-  const data = await Tour.find(searchQuery)
-    .find(filter)
-    .sort(sort)
-    .select(fields)
-    .skip(skip)
-    .limit(limit);
-  const totalTour = await Tour.countDocuments();
-  const totalPage = Math.ceil(totalTour / limit);
+//   const tourSearchableFields = ["title", "description", "location"];
+//   const searchQuery = {
+//     $or: tourSearchableFields.map((field) => ({
+//       [field]: { $regex: search, $options: "i" },
+//     })),
+//   };
+//   // console.log(filter);
+//   const data = await Tour.find(searchQuery)
+//     .find(filter)
+//     .sort(sort)
+//     .select(fields)
+//     .skip(skip)
+//     .limit(limit);
+//   const totalTour = await Tour.countDocuments();
+//   const totalPage = Math.ceil(totalTour / limit);
 
-  const meta = {
-    page: page,
-    limit: limit,
-    total: totalTour,
-    totalPage: totalPage,
-  };
-  return {
-    data,
-    meta: meta,
-  };
-};
+//   const meta = {
+//     page: page,
+//     limit: limit,
+//     total: totalTour,
+//     totalPage: totalPage,
+//   };
+//   return {
+//     data,
+//     meta: meta,
+//   };
+// };
 
 const getSingleTour = async (slug: string) => {
   const tour = await Tour.findOne({ slug: slug });
@@ -122,7 +122,6 @@ const deleteTourType = async (id: string) => {
 };
 
 export const TourService = {
-  getAllTours,
   getSingleTour,
   createTour,
   updateTour,

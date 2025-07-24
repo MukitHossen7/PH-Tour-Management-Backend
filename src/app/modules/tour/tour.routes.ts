@@ -8,6 +8,8 @@ import {
   createTourZodSchema,
   updateTourZodSchema,
 } from "./tour.zod.validation";
+import { queryBuilders } from "../../middlewares/queryBuilders";
+import { Tour } from "./tour.model";
 
 const tourRoute = express.Router();
 
@@ -36,7 +38,11 @@ tourRoute.delete(
 );
 
 //TOUR ROUTES
-tourRoute.get("/", TourController.getAllTours);
+tourRoute.get(
+  "/",
+  queryBuilders(Tour, ["title", "description", "location"]),
+  TourController.getAllTours
+);
 
 tourRoute.post(
   "/create",
