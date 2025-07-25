@@ -31,9 +31,61 @@ const successPayment = async (query: Record<string, string>) => {
   }
 };
 
-const failPayment = async () => {};
+const failPayment = async (query: Record<string, string>) => {
+  const session = await Booking.startSession();
+  session.startTransaction();
+  try {
+    const updatePayment = await Payment.findOneAndUpdate(
+      {
+        transactionId: query.transactionId,
+      },
+      { status: PAYMENT_STATUS.FAILED },
+      { runValidators: true, session }
+    );
 
-const cancelPayment = async () => {};
+    await Booking.findByIdAndUpdate(
+      updatePayment?.booking,
+
+      { status: BOOKING_STATUS.FAILED },
+      { runValidators: true, session }
+    );
+    await session.commitTransaction();
+    session.endSession();
+    return { success: false, message: "Payment Failed" };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
+
+const cancelPayment = async (query: Record<string, string>) => {
+  const session = await Booking.startSession();
+  session.startTransaction();
+  try {
+    const updatePayment = await Payment.findOneAndUpdate(
+      {
+        transactionId: query.transactionId,
+      },
+      { status: PAYMENT_STATUS.CANCELLED },
+      { runValidators: true, session }
+    );
+
+    await Booking.findByIdAndUpdate(
+      updatePayment?.booking,
+
+      { status: BOOKING_STATUS.CANCEL },
+      { runValidators: true, session }
+    );
+    await session.commitTransaction();
+    session.endSession();
+    return { success: false, message: "Payment Cancel" };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
 
 export const PaymentService = {
   successPayment,
