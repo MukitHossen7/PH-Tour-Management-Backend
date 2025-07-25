@@ -31,4 +31,9 @@ export default {
     SLL_FAIL_FRONTEND_URL: process.env.SLL_FAIL_FRONTEND_URL as string,
     SLL_CANCEL_FRONTEND_URL: process.env.SLL_CANCEL_FRONTEND_URL as string,
   },
+  CLOUDINARY: {
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+  },
 };
