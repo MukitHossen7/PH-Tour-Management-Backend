@@ -14,9 +14,9 @@ const sslPaymentInit = async (payload: ISSLCommerz) => {
       total_amount: payload.amount,
       currency: "BDT",
       tran_id: payload.transactionId,
-      success_url: config.SSL.SLL_SUCCESS_BACKEND_URL,
-      fail_url: config.SSL.SLL_FAIL_BACKEND_URL,
-      cancel_url: config.SSL.SLL_CANCEL_BACKEND_URL,
+      success_url: `${config.SSL.SLL_SUCCESS_BACKEND_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=success`,
+      fail_url: `${config.SSL.SLL_FAIL_BACKEND_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=fail`,
+      cancel_url: `${config.SSL.SLL_CANCEL_BACKEND_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=cancel`,
       // ipn_url
       shipping_method: "N/A",
       product_name: "Tour Management",
