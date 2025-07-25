@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { PaymentService } from "./payment.service";
 import config from "../../../config";
+import { sendResponse } from "../../utils/sendResponse";
 
 const successPayment = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
@@ -39,8 +40,20 @@ const cancelPayment = catchAsync(async (req: Request, res: Response) => {
   }
 });
 
+const initPayment = catchAsync(async (req: Request, res: Response) => {
+  const bookingId = req.params.bookingId;
+  const result = await PaymentService.initPayment(bookingId as string);
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Cancel Payment successfully",
+    data: result,
+  });
+});
+
 export const PaymentController = {
   successPayment,
   failPayment,
   cancelPayment,
+  initPayment,
 };
