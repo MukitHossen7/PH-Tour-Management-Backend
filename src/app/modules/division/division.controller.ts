@@ -7,7 +7,11 @@ import httpStatus from "http-status-codes";
 
 const createDivision = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await DivisionService.createDivision(req.body);
+    const payload = {
+      ...req.body,
+      thumbnail: req.file?.path,
+    };
+    const result = await DivisionService.createDivision(payload);
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,

@@ -7,12 +7,14 @@ import {
   createDivisionSchema,
   updateDivisionSchema,
 } from "./division.zod.validation";
+import { multerUpload } from "../../config/multer.config";
 
 const divisionRoute = express.Router();
 
 divisionRoute.post(
   "/create",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.single("file"),
   zodValidateRequest(createDivisionSchema),
   DivisionController.createDivision
 );
