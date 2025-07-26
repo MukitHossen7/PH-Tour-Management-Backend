@@ -4,11 +4,17 @@ import { catchAsync } from "../../utils/catchAsync";
 import { TourService } from "./tour.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
+import { ITour } from "./tour.interface";
 
 //Tour CRUD Operations
 const createTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await TourService.createTour(req.body);
+    const payload: ITour = {
+      ...req.body,
+      images: (req.files as Express.Multer.File[])?.map((file) => file.path),
+    };
+
+    const result = await TourService.createTour(payload);
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
       success: true,
@@ -17,18 +23,6 @@ const createTour = catchAsync(
     });
   }
 );
-
-// const getAllTours = catchAsync(async (req: Request, res: Response ,next:NextFunction) => {
-//   const query = req.query;
-//   const result = await TourService.getAllTours(query as Record<string, string>);
-//   sendResponse(res, {
-//     statusCode: 200,
-//     success: true,
-//     message: "Tours retrieved successfully",
-//     data: result.data,
-//     meta: result.meta,
-//   });
-// });
 
 const getAllTours = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {

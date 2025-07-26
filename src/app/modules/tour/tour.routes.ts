@@ -10,6 +10,7 @@ import {
 } from "./tour.zod.validation";
 import { queryBuilders } from "../../middlewares/queryBuilders";
 import { Tour } from "./tour.model";
+import { multerUpload } from "../../config/multer.config";
 
 const tourRoute = express.Router();
 
@@ -47,6 +48,7 @@ tourRoute.get(
 tourRoute.post(
   "/create",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.array("files"),
   zodValidateRequest(createTourZodSchema),
   TourController.createTour
 );
