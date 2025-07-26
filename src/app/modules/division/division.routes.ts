@@ -26,6 +26,7 @@ divisionRoute.get("/:slug", DivisionController.getSingleDivision);
 divisionRoute.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.single("file"),
   zodValidateRequest(updateDivisionSchema),
   DivisionController.updateDivision
 );
