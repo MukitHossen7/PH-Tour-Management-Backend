@@ -30,6 +30,13 @@ export const checkAuth =
         throw new AppError(httpStatus.BAD_REQUEST, "Email does not exist");
       }
 
+      if (isExistUser.isVerified === !true) {
+        throw new AppError(
+          httpStatus.FORBIDDEN,
+          "Your account is not verified"
+        );
+      }
+
       if (
         isExistUser.isActive === IsActive.BLOCKED ||
         isExistUser.isActive === IsActive.INACTIVE

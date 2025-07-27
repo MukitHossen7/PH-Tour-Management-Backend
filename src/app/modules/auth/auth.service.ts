@@ -14,27 +14,28 @@ import config from "../../../config";
 
 //cradientional login without passport.js
 const createLogin = async (payload: Partial<IUser>) => {
-  const { email, password } = payload;
-  const isExistUser = await User.findOne({ email });
-  if (!isExistUser) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Email does not exist");
-  }
-  const isPasswordMatch = await bcrypt.compare(
-    password as string,
-    isExistUser.password as string
-  );
-  if (!isPasswordMatch) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Password is incorrect");
-  }
+  // const { email, password } = payload;
+  // const isExistUser = await User.findOne({ email });
+  // if (!isExistUser) {
+  //   throw new AppError(httpStatus.BAD_REQUEST, "Email does not exist");
+  // }
+  // const isPasswordMatch = await bcrypt.compare(
+  //   password as string,
+  //   isExistUser.password as string
+  // );
+  // if (!isPasswordMatch) {
+  //   throw new AppError(httpStatus.BAD_REQUEST, "Password is incorrect");
+  // }
 
-  const userTokens = createUserTokens(isExistUser);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password: pass, ...rest } = isExistUser.toObject();
-  return {
-    accessToken: userTokens.accessToken,
-    refreshToken: userTokens.refreshToken,
-    user: rest,
-  };
+  // const userTokens = createUserTokens(isExistUser);
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // const { password: pass, ...rest } = isExistUser.toObject();
+  // return {
+  //   accessToken: userTokens.accessToken,
+  //   refreshToken: userTokens.refreshToken,
+  //   user: rest,
+  // };
+  return {};
 };
 
 const createNewAccessToken = async (refreshToken: string) => {

@@ -7,9 +7,11 @@ import {
 } from "passport-google-oauth20";
 import config from "../../config";
 import { User } from "../modules/user/user.model";
-import { Role } from "../modules/user/user.interface";
+import { IsActive, Role } from "../modules/user/user.interface";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
+import AppError from "../errorHelpers/AppError";
+import httpStatus from "http-status-codes";
 
 // credential Login use passPort.js
 passport.use(
@@ -23,6 +25,27 @@ passport.use(
         const isExistUser = await User.findOne({ email });
         if (!isExistUser) {
           return done(null, false, { message: "Email does not exist" });
+        }
+
+        if (isExistUser.isVerified === !true) {
+          throw new AppError(
+            httpStatus.FORBIDDEN,
+            "Your account is not Verified"
+          );
+        }
+
+        if (
+          isExistUser.isActive === IsActive.BLOCKED ||
+          isExistUser.isActive === IsActive.INACTIVE
+        ) {
+          throw new AppError(
+            httpStatus.FORBIDDEN,
+            "Your account is blocked or inactive"
+          );
+        }
+
+        if (isExistUser.isDeleted === true) {
+          throw new AppError(httpStatus.FORBIDDEN, "Your account is deleted");
         }
 
         const isGoogleAuthenticated = isExistUser.auths.some(
