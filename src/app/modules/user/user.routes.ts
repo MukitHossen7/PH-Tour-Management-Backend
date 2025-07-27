@@ -17,6 +17,7 @@ userRoute.get(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   userControllers.getAllUsers
 );
+userRoute.get("/me", checkAuth(...Object.values(Role)), userControllers.getMe);
 
 userRoute.patch(
   "/:id",

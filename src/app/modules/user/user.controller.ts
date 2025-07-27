@@ -31,6 +31,19 @@ const getAllUsers = catchAsync(
     });
   }
 );
+const getMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decoded = req.user as JwtPayload;
+    const user = await userServices.getMe(decoded.id);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "You profile Retrieved Successfully",
+      data: user,
+    });
+  }
+);
+
 const updateUserById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
@@ -59,5 +72,6 @@ const updateUserById = catchAsync(
 export const userControllers = {
   createUser,
   getAllUsers,
+  getMe,
   updateUserById,
 };
