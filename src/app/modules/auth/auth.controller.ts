@@ -7,10 +7,10 @@ import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
 import { setAuthCookie } from "../../utils/setCookie";
-import { JwtPayload } from "jsonwebtoken";
 import { createUserTokens } from "../../utils/userToken";
 import config from "../../../config";
 import passport from "passport";
+import { JwtPayload } from "jsonwebtoken";
 
 // cradientional login without passport.js
 // const createLogin = catchAsync(
@@ -113,6 +113,42 @@ const logOutUser = catchAsync(
   }
 );
 
+const changePassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user;
+    if (!decodedToken) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "Invalid token");
+    }
+    const newPassword = req.body.newPassword;
+    const oldPassword = req.body.oldPassword;
+
+    await authService.changePassword(decodedToken, newPassword, oldPassword);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Password reset Successfully",
+      data: null,
+    });
+  }
+);
+
+const setPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const { password } = req.body;
+
+    await authService.setPassword(decodedToken.id, password);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Password set Successfully",
+      data: null,
+    });
+  }
+);
+
 const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user;
@@ -163,5 +199,7 @@ export const authController = {
   createNewAccessToken,
   logOutUser,
   resetPassword,
+  changePassword,
+  setPassword,
   googleLogin,
 };
