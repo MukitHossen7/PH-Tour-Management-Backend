@@ -169,6 +169,26 @@ const resetPassword = catchAsync(
   }
 );
 
+const forgotPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user;
+    if (!decodedToken) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "Invalid token");
+    }
+    const newPassword = req.body.newPassword;
+    const oldPassword = req.body.oldPassword;
+
+    await authService.forgotPassword(decodedToken, newPassword, oldPassword);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Password reset Successfully",
+      data: null,
+    });
+  }
+);
+
 const googleLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     let redirectUrl = req.query.state ? (req.query.state as string) : "";
@@ -201,5 +221,6 @@ export const authController = {
   resetPassword,
   changePassword,
   setPassword,
+  forgotPassword,
   googleLogin,
 };

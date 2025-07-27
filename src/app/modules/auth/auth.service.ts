@@ -129,10 +129,35 @@ const resetPassword = async (
   return {};
 };
 
+const forgotPassword = async (
+  decodedToken: JwtPayload,
+  newPassword: string,
+  oldPassword: string
+) => {
+  // const isExistUser = await User.findById(decodedToken.id);
+  // if (!isExistUser) {
+  //   throw new AppError(httpStatus.BAD_REQUEST, "ID does not exist");
+  // }
+  // const isOldPasswordMatch = await bcrypt.compare(
+  //   oldPassword,
+  //   isExistUser.password as string
+  // );
+  // if (!isOldPasswordMatch) {
+  //   throw new AppError(httpStatus.BAD_REQUEST, "Old password is incorrect");
+  // }
+  // isExistUser.password = await bcrypt.hash(
+  //   newPassword,
+  //   Number(config.bcrypt_salt_rounds)
+  // );
+  // isExistUser.save();
+  return {};
+};
+
 export const authService = {
   createLogin,
   createNewAccessToken,
   resetPassword,
   setPassword,
+  forgotPassword,
   changePassword,
 };
