@@ -99,9 +99,9 @@ const setPassword = async (id: string, password: string) => {
     provider: "credential",
     providerID: user.email,
   };
-  user.auths = [authProvider];
+  user.auths = [...user.auths, authProvider];
   user.password = hashPassword;
-  user.save();
+  await user.save();
 };
 
 const resetPassword = async (
