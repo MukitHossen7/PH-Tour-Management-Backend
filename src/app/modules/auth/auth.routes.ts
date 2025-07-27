@@ -3,6 +3,7 @@ import { authController } from "./auth.controller";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 import passport from "passport";
+import config from "../../../config";
 
 const authRoute = express.Router();
 
@@ -37,7 +38,9 @@ authRoute.get(
 
 authRoute.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+  passport.authenticate("google", {
+    failureRedirect: `${config.FRONTEND_URL}/login?error=There is some issues with your account.Please contact our support team`,
+  }),
   authController.googleLogin
 );
 export default authRoute;

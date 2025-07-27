@@ -10,8 +10,6 @@ import { User } from "../modules/user/user.model";
 import { IsActive, Role } from "../modules/user/user.interface";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
-import AppError from "../errorHelpers/AppError";
-import httpStatus from "http-status-codes";
 
 // credential Login use passPort.js
 passport.use(
@@ -28,24 +26,22 @@ passport.use(
         }
 
         if (isExistUser.isVerified === !true) {
-          throw new AppError(
-            httpStatus.FORBIDDEN,
-            "Your account is not Verified"
-          );
+          return done(null, false, { message: "Your account is not Verified" });
         }
 
         if (
           isExistUser.isActive === IsActive.BLOCKED ||
           isExistUser.isActive === IsActive.INACTIVE
         ) {
-          throw new AppError(
-            httpStatus.FORBIDDEN,
-            "Your account is blocked or inactive"
-          );
+          return done(null, false, {
+            message: "Your account is blocked or inactive",
+          });
         }
 
         if (isExistUser.isDeleted === true) {
-          throw new AppError(httpStatus.FORBIDDEN, "Your account is deleted");
+          return done(null, false, {
+            message: "Your account is deleted",
+          });
         }
 
         const isGoogleAuthenticated = isExistUser.auths.some(
@@ -97,6 +93,27 @@ passport.use(
           });
         }
         let user = await User.findOne({ email });
+        if (user && user.isVerified === !true) {
+          return done(null, false, {
+            message: "Your account is not Verified",
+          });
+        }
+
+        if (
+          user &&
+          (user.isActive === IsActive.BLOCKED ||
+            user.isActive === IsActive.INACTIVE)
+        ) {
+          return done(null, false, {
+            message: "Your account is blocked or inactive",
+          });
+        }
+
+        if (user && user.isDeleted === true) {
+          return done(null, false, {
+            message: "Your account is deleted",
+          });
+        }
         if (!user) {
           user = await User.create({
             email,
