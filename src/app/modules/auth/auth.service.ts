@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import AppError from "../../errorHelpers/AppError";
-import { IAuthsProviders, IUser } from "../user/user.interface";
+import { IAuthsProviders, IsActive, IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import httpStatus from "http-status-codes";
 import bcrypt from "bcryptjs";
@@ -129,28 +129,32 @@ const resetPassword = async (
   return {};
 };
 
-const forgotPassword = async (
-  decodedToken: JwtPayload,
-  newPassword: string,
-  oldPassword: string
-) => {
-  // const isExistUser = await User.findById(decodedToken.id);
-  // if (!isExistUser) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, "ID does not exist");
-  // }
-  // const isOldPasswordMatch = await bcrypt.compare(
-  //   oldPassword,
-  //   isExistUser.password as string
-  // );
-  // if (!isOldPasswordMatch) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, "Old password is incorrect");
-  // }
-  // isExistUser.password = await bcrypt.hash(
-  //   newPassword,
-  //   Number(config.bcrypt_salt_rounds)
-  // );
-  // isExistUser.save();
-  return {};
+const forgotPassword = async (email: string) => {
+  const isExistUser = await User.findOne({ email: email });
+
+  if (!isExistUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Email does not exist");
+  }
+
+  if (isExistUser.isVerified === !true) {
+    throw new AppError(httpStatus.FORBIDDEN, "Your account is not verified");
+  }
+
+  if (
+    isExistUser.isActive === IsActive.BLOCKED ||
+    isExistUser.isActive === IsActive.INACTIVE
+  ) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "Your account is blocked or inactive"
+    );
+  }
+
+  if (isExistUser.isDeleted === true) {
+    throw new AppError(httpStatus.FORBIDDEN, "Your account is deleted");
+  }
+
+  return isExistUser;
 };
 
 export const authService = {
