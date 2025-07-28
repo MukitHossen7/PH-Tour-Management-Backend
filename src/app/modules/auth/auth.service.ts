@@ -11,6 +11,8 @@ import {
 } from "../../utils/userToken";
 import { JwtPayload } from "jsonwebtoken";
 import config from "../../../config";
+import jwt from "jsonwebtoken";
+import { sendEmail } from "../../utils/sendEmail";
 
 //cradientional login without passport.js
 const createLogin = async (payload: Partial<IUser>) => {
@@ -108,25 +110,21 @@ const setPassword = async (id: string, password: string) => {
 const resetPassword = async (
   decodedToken: JwtPayload,
   newPassword: string,
-  oldPassword: string
+  id: string
 ) => {
-  // const isExistUser = await User.findById(decodedToken.id);
-  // if (!isExistUser) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, "ID does not exist");
-  // }
-  // const isOldPasswordMatch = await bcrypt.compare(
-  //   oldPassword,
-  //   isExistUser.password as string
-  // );
-  // if (!isOldPasswordMatch) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, "Old password is incorrect");
-  // }
-  // isExistUser.password = await bcrypt.hash(
-  //   newPassword,
-  //   Number(config.bcrypt_salt_rounds)
-  // );
-  // isExistUser.save();
-  return {};
+  if (id !== decodedToken.id) {
+    throw new AppError(401, "You can not reset your password");
+  }
+  const isExistUser = await User.findById(decodedToken.id);
+  if (!isExistUser) {
+    throw new AppError(httpStatus.BAD_REQUEST, "ID does not exist");
+  }
+
+  isExistUser.password = await bcrypt.hash(
+    newPassword,
+    Number(config.bcrypt_salt_rounds)
+  );
+  await isExistUser.save();
 };
 
 const forgotPassword = async (email: string) => {
@@ -153,8 +151,26 @@ const forgotPassword = async (email: string) => {
   if (isExistUser.isDeleted === true) {
     throw new AppError(httpStatus.FORBIDDEN, "Your account is deleted");
   }
+  const payload = {
+    email: isExistUser.email,
+    role: isExistUser.role,
+    id: isExistUser.id,
+  };
 
-  return isExistUser;
+  const resetToken = jwt.sign(payload, config.jwt_secret as string, {
+    expiresIn: "10m",
+  });
+  const resetUILink = `${config.FRONTEND_URL}/reset-password?id=${isExistUser._id}&token=${resetToken}`;
+
+  sendEmail({
+    to: isExistUser.email,
+    subject: "Password Reset",
+    templateName: "forgetPassword",
+    templateData: {
+      name: isExistUser.name,
+      resetUILink,
+    },
+  });
 };
 
 export const authService = {

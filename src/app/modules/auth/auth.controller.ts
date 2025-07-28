@@ -151,14 +151,14 @@ const setPassword = catchAsync(
 
 const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    const { newPassword, id } = req.body;
+
     const decodedToken = req.user;
     if (!decodedToken) {
       throw new AppError(httpStatus.UNAUTHORIZED, "Invalid token");
     }
-    const newPassword = req.body.newPassword;
-    const oldPassword = req.body.oldPassword;
 
-    await authService.resetPassword(decodedToken, newPassword, oldPassword);
+    await authService.resetPassword(decodedToken, newPassword, id);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -172,13 +172,13 @@ const resetPassword = catchAsync(
 const forgotPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
-    const result = await authService.forgotPassword(email);
+    await authService.forgotPassword(email);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: "Password forgot Successfully",
-      data: result,
+      data: null,
     });
   }
 );
