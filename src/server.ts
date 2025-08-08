@@ -4,6 +4,7 @@ import config from "./config";
 import { app } from "./app";
 import { Server } from "http";
 import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
+import { connectRedis } from "./app/config/redis.config";
 
 let server: Server;
 
@@ -24,6 +25,7 @@ const tourServer = async () => {
 };
 
 (async () => {
+  await connectRedis();
   await tourServer();
   await seedSuperAdmin();
 })();
