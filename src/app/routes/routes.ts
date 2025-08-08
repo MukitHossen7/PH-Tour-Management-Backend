@@ -5,6 +5,7 @@ import divisionRoute from "../modules/division/division.routes";
 import tourRoute from "../modules/tour/tour.routes";
 import bookingRoute from "../modules/booking/booking.route";
 import paymentRoute from "../modules/payment/payment.route";
+import optRoute from "../modules/otp/otp.route";
 
 const routes = Router();
 
@@ -14,5 +15,6 @@ routes.use("/division", divisionRoute);
 routes.use("/tour", tourRoute);
 routes.use("/booking", bookingRoute);
 routes.use("/payment", paymentRoute);
+routes.use("/otp", optRoute);
 
 export default routes;
