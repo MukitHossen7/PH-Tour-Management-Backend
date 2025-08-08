@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f9fc;
+        padding: 20px;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #fff;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+      h2 {
+        color: #2b7cff;
+      }
+      .details {
+        margin-top: 20px;
+        line-height: 1.6;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #999;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Hi <%= userName %>,</h2>
+      <p>Thank you for your booking! Here is your invoice summary:</p>
+
+      <div class="details">
+        <p><strong>Tour Title:</strong> <%= tourTitle %></p>
+        <p><strong>Transaction ID:</strong> <%= transactionId %></p>
+        <p><strong>Total Amount:</strong> $<%= totalAmount %></p>
+        <p><strong>Guest Count:</strong> <%= guestCount %></p>
+        <p>
+          <strong>Booking Date:</strong> <%= new
+          Date(bookingDate).toLocaleDateString() %>
+        </p>
+      </div>
+
+      <p>You’ll find a PDF copy of this invoice attached to this email.</p>
+
+      <div class="footer">
+        <p>
+          &copy; <%= new Date().getFullYear() %> Eco Adventure Travel Co. All
+          rights reserved.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

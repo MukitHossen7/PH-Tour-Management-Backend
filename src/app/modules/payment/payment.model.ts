@@ -30,6 +30,9 @@ const paymentSchema = new Schema<IPayment>(
       enum: Object.values(PAYMENT_STATUS),
       default: PAYMENT_STATUS.UNPAID,
     },
+    createdAt: {
+      type: Date,
+    },
   },
   { timestamps: true, versionKey: false }
 );

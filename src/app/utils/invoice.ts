@@ -6,14 +6,16 @@ import AppError from "../errorHelpers/AppError";
 
 interface IInvoiceInfo {
   transactionId: string;
-  bookingDate: string;
+  bookingDate: Date;
   userName: string;
   tourTitle: string;
   guestCount: number;
   totalAmount: number;
 }
 
-export const generatePdf = async (invoiceInfo: IInvoiceInfo) => {
+export const generatePdf = async (
+  invoiceInfo: IInvoiceInfo
+): Promise<Buffer<ArrayBufferLike>> => {
   try {
     return new Promise((resolve, reject) => {
       const doc = new PDFDocument({ size: "A4", margin: 50 });

@@ -4,6 +4,17 @@ import { PaymentService } from "./payment.service";
 import config from "../../../config";
 import { sendResponse } from "../../utils/sendResponse";
 
+const initPayment = catchAsync(async (req: Request, res: Response) => {
+  const bookingId = req.params.bookingId;
+  const result = await PaymentService.initPayment(bookingId as string);
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Cancel Payment successfully",
+    data: result,
+  });
+});
+
 const successPayment = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
   const result = await PaymentService.successPayment(
@@ -38,17 +49,6 @@ const cancelPayment = catchAsync(async (req: Request, res: Response) => {
       `${config.SSL.SLL_CANCEL_FRONTEND_URL}?transactionId=${query.transactionId}&message=${result.message}&amount=${query.amount}&status=${query.status}`
     );
   }
-});
-
-const initPayment = catchAsync(async (req: Request, res: Response) => {
-  const bookingId = req.params.bookingId;
-  const result = await PaymentService.initPayment(bookingId as string);
-  sendResponse(res, {
-    statusCode: 201,
-    success: true,
-    message: "Cancel Payment successfully",
-    data: result,
-  });
 });
 
 export const PaymentController = {
