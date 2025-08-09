@@ -36,9 +36,18 @@ const updateUserById = async (
   payload: Partial<IUser>,
   decodedToken: JwtPayload
 ) => {
+  if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
+    if (userId !== decodedToken.id) {
+      throw new AppError(401, "You are not authorized");
+    }
+  }
   const user = await User.findById(userId);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  if (decodedToken.role === Role.ADMIN && user.role === Role.SUPER_ADMIN) {
+    throw new AppError(401, "You are not authorized");
   }
 
   if (payload.role) {
@@ -48,12 +57,12 @@ const updateUserById = async (
         "You do not have permission to change user roles"
       );
     }
-    if (payload.role === Role.SUPER_ADMIN && decodedToken.role === Role.ADMIN) {
-      throw new AppError(
-        httpStatus.FORBIDDEN,
-        "Only Super Admin can assign Super Admin role"
-      );
-    }
+    // if (payload.role === Role.SUPER_ADMIN && decodedToken.role === Role.ADMIN) {
+    //   throw new AppError(
+    //     httpStatus.FORBIDDEN,
+    //     "Only Super Admin can assign Super Admin role"
+    //   );
+    // }
   }
 
   if (payload.isActive || payload.isDeleted || payload.isVerified) {
@@ -64,12 +73,7 @@ const updateUserById = async (
       );
     }
   }
-  if (payload.password) {
-    payload.password = await bcrypt.hash(
-      payload.password as string,
-      Number(config.bcrypt_salt_rounds)
-    );
-  }
+
   const updatedUser = await User.findByIdAndUpdate(userId, payload, {
     new: true,
     runValidators: true,

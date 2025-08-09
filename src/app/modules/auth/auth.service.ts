@@ -59,6 +59,9 @@ const changePassword = async (
   if (!isExistUser) {
     throw new AppError(httpStatus.BAD_REQUEST, "ID does not exist");
   }
+  if (oldPassword === newPassword) {
+    throw new AppError(401, "Your password is same");
+  }
   const isOldPasswordMatch = await bcrypt.compare(
     oldPassword,
     isExistUser.password as string
