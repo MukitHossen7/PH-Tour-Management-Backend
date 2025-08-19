@@ -5,8 +5,8 @@ import httpStatus from "http-status-codes";
 import { OTPService } from "./opt.services";
 
 const sendOPT = catchAsync(async (req: Request, res: Response) => {
-  const { email, name } = req.body;
-  await OTPService.sendOPT(email, name);
+  const { email } = req.body;
+  await OTPService.sendOPT(email);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
