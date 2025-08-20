@@ -8,7 +8,7 @@ export const seedSuperAdmin = async () => {
   try {
     const isSuperAdminExists = await User.findOne({
       email: config.super_admin_email,
-      role: "SUPER_ADMIN",
+      role: "ADMIN",
     });
     if (isSuperAdminExists) {
       console.log("Super Admin already exists");
@@ -24,10 +24,10 @@ export const seedSuperAdmin = async () => {
       providerID: config.super_admin_email as string,
     };
     const payload: IUser = {
-      name: "Super Admin",
+      name: "Admin",
       email: config.super_admin_email as string,
       password: hashedPassword,
-      role: Role.SUPER_ADMIN,
+      role: Role.ADMIN,
       isVerified: true,
       auths: [authProvider],
     };
